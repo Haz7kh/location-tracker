@@ -11,33 +11,36 @@
   <script>
     function shareLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async function(position) {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          const timestamp = new Date().toISOString();
-          const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+        navigator.geolocation.getCurrentPosition(
+          async function (position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const timestamp = new Date().toISOString();
+            const map = `https://www.google.com/maps?q=${latitude},${longitude}`;
 
-          const data = {
-            latitude,
-            longitude,
-            timestamp,
-            map: mapUrl
-          };
+            const data = { latitude, longitude, timestamp, map };
 
-          await fetch('https://webhook.site/26afdcae-0479-49a8-ae03-88cd64a0d9cd', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          });
+            try {
+              const res = await fetch('https://webhook.site/26afdcae-0479-49a8-ae03-88cd64a0d9cd', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+              });
 
-          alert("Tack! Din plats har skickats.");
-        }, function(error) {
-          alert("Kunde inte hämta plats. Du kanske nekade åtkomst?");
-        });
+              alert('Tack! Din plats har skickats.');
+            } catch (err) {
+              alert('Kunde inte skicka plats. Något gick fel.');
+              console.error(err);
+            }
+          },
+          function (error) {
+            alert('Du nekade platsåtkomst eller ett fel inträffade.');
+          }
+        );
       } else {
-        alert("Den här webbläsaren stöder inte platsdelning.");
+        alert('Din webbläsare stöder inte geolocation.');
       }
     }
   </script>
